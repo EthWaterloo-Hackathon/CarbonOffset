@@ -15,9 +15,9 @@ contract CarbonOffsetProgram is Ownable {
 
     BeneficiaryRegistry public registry;
 
-    uint public carbonTonnagePerETH;
+    uint public carbonEmissionsPerGasUnit;
 
-    uint public ethOffset;
+    uint public totalContributions;
 
     uint public constant MIN_CONTRIBUTION = 1 ether;
 
@@ -46,10 +46,12 @@ contract CarbonOffsetProgram is Ownable {
         require(msg.value >= MIN_CONTRIBUTION);
 
         uint contribution = msg.value;
-        uint purchased = contribution.mul(carbonTonnagePerETH);
-        uint totalSold = ethOffset.add(contribution);
+        uint rate = registry.getRate(_beneficiaryENS);
 
-        ethOffset = totalSold;
+        uint purchased = contribution.div(rate);
+        uint totalSold = totalContributions.add(contribution);
+
+        totalContributions = totalSold;
         wallet.transfer(contribution);
         token.transfer(msg.sender, purchased);
 
@@ -62,12 +64,13 @@ contract CarbonOffsetProgram is Ownable {
     function addBeneficiary(
         bytes32 _ens,
         bytes32 _name,
-        address payable _wallet
+        address payable _wallet,
+        bytes32 _rateApiUrl
     )
         public
         onlyOwner
     {
-        registry.addBeneficiary(_ens, _name, _wallet);
+        registry.addBeneficiary(_ens, _name, _wallet, _rateApiUrl);
     }
 
     /**
@@ -79,7 +82,7 @@ contract CarbonOffsetProgram is Ownable {
         onlyOwner
         external returns (bool)
     {
-        carbonTonnagePerETH = _rate;
+        carbonEmissionsPerGasUnit = _rate;
 
         return true;
     }

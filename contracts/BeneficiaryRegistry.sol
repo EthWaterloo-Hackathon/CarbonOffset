@@ -23,6 +23,8 @@ contract BeneficiaryRegistry is Ownable {
         address payable wallet;
         /// Used for membership check
         bool exists;
+        /// Used to get value of carbon credit in ETH
+        bytes32 rateApiUrl;
     }
 
     /*
@@ -50,7 +52,8 @@ contract BeneficiaryRegistry is Ownable {
     function addBeneficiary(
         bytes32 _ens,
         bytes32 _name,
-        address payable _wallet
+        address payable _wallet,
+        bytes32 _rateApiUrl
     )
         public
         onlyOwner
@@ -63,6 +66,7 @@ contract BeneficiaryRegistry is Ownable {
             beneficiary.name = _name;
             beneficiary.wallet = _wallet;
             beneficiary.exists = true;
+            beneficiary.rateApiUrl = _rateApiUrl;
 
             registry[_ens] = beneficiary;
             ensIndex.push(_ens);
@@ -105,5 +109,13 @@ contract BeneficiaryRegistry is Ownable {
             _names[i] = beneficiary.name;
             _wallets[i] = beneficiary.wallet;
         }
+    }
+
+    /**
+     * Returns the value of a carbon credit (1 tonne) in ETH
+     */
+    function getRate(bytes32 _ens) public pure returns (uint _rate) {
+        // TODO: use chainlink to get rate from the beneficiary's API url
+        _rate = 1;
     }
 }
