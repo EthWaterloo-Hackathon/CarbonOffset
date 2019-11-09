@@ -16,10 +16,6 @@ module.exports = function (deployer, network, accounts) {
 
         // Driver controls registry
         await registry.transferOwnership(driver.address);
-
-        // let balance = await await gift.balanceOf(driver.address);
-        // console.log(totalSupply.toString());
-        // console.log(balance.toString());
     })
     .catch((err) => {
         console.error("Deployment failed", err);

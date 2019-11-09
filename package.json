@@ -9,9 +9,12 @@
     "dependencies": {
         "@openzeppelin/contracts": "^2.4.0",
         "chainlink": "^0.7.9",
-        "nconf": "^0.10.0"
+        "nconf": "^0.10.0",
+        "web3": "^1.2.2"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "chai": "^4.2.0"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
