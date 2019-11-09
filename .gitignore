@@ -1,0 +1,12 @@
+!.gitkeep
+.DS_Store
+.idea
+.notes
+build
+bower_components
+contracts.txt
+dist
+logs
+node_modules
+secrets.json
+truffle.js
