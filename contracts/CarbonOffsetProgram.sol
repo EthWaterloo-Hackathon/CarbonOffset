@@ -22,6 +22,11 @@ contract CarbonOffsetProgram is Ownable {
     uint public constant MIN_CONTRIBUTION = 1 ether;
 
     /**
+     * Events
+     */
+    event GuiltAlleviated(uint indexed _tonnes, uint indexed _gas);
+
+    /**
      * @dev Initialize with token address and beneficiary registry.
      */
     constructor(address _token, address _registry) public {
@@ -48,12 +53,15 @@ contract CarbonOffsetProgram is Ownable {
         uint contribution = msg.value;
         uint rate = registry.getRate(_beneficiaryENS);
 
-        uint purchased = contribution.div(rate);
+        uint purchased = contribution.div(rate) ** 18;
+        uint gas = purchased.div(this.getCarbonEmissionsPerGasUnit());
         uint totalSold = totalContributions.add(contribution);
 
         totalContributions = totalSold;
         wallet.transfer(contribution);
         token.transfer(msg.sender, purchased);
+
+        emit GuiltAlleviated(purchased, gas);
 
         return purchased;
     }
@@ -76,7 +84,7 @@ contract CarbonOffsetProgram is Ownable {
     /**
      * @dev Carbon tonnage spent in terms of Ether produced.
      */
-    function setCarbonTonnagePerETH(
+    function setCarbonEmissionsPerGasUnit(
         uint _rate
     )
         onlyOwner
@@ -87,4 +95,8 @@ contract CarbonOffsetProgram is Ownable {
         return true;
     }
 
+    function getCarbonEmissionsPerGasUnit() external pure returns (uint _emissions) {
+        // TODO: chainlink this mofo up
+        _emissions = carbonEmissionsPergasUnit;
+    }
 }
