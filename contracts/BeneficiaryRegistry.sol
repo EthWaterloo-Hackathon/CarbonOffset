@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 /**
- * @dev Registry of beneficiaries who receive `CarbonGuiltToken`s.
+ * @dev Registry of beneficiaries who are eligible to receive payment in exchange for offsetting carbon emissions.
  */
 contract BeneficiaryRegistry is Ownable {
 
@@ -95,4 +95,15 @@ contract BeneficiaryRegistry is Ownable {
         }
     }
 
+    function getAllBeneficiaries() public view returns (bytes32[] memory _names, address[] memory _wallets, bytes32[] memory _ensAddresses) {
+        bytes32 ens;
+        Beneficiary memory beneficiary;
+        for (uint i = 0; i < ensIndex.length; i++) {
+            ens = ensIndex[i];
+            beneficiary = registry[ens];
+            _ensAddresses[i] = ens;
+            _names[i] = beneficiary.name;
+            _wallets[i] = beneficiary.wallet;
+        }
+    }
 }
