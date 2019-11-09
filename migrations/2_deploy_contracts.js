@@ -1,4 +1,4 @@
-const CarbonGuiltToken = artifacts.require("CarbonGuiltToken.sol");
+const GIFT = artifacts.require("./GIFT.sol");
 
 const config = require("../config");
 const fs = require("fs");
@@ -9,7 +9,7 @@ let token;
 
 module.exports = function (deployer, network, accounts) {
     deployer.then(async () => {
-            token = await deployer.deploy(CarbonGuiltToken, config.get("token:initialSupply"));
+            token = await deployer.deploy(GIFT, config.get("token:initialSupply"));
         })
         .catch((err) => {
             console.error("Deployment failed", err);
