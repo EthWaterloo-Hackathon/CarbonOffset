@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 contract BeneficiaryRegistry is Ownable {
 
     /// Registry
-    mapping (bytes32 => Beneficiary) registry;
+    mapping(bytes32 => Beneficiary) registry;
 
     /// stores keys separately
     bytes32[] ensIndex;
@@ -20,7 +20,7 @@ contract BeneficiaryRegistry is Ownable {
         /// Name
         bytes32 name;
         /// ETH is sent to this entity wallet
-        address wallet;
+        address payable wallet;
         /// Used for membership check
         bool exists;
     }
@@ -59,7 +59,7 @@ contract BeneficiaryRegistry is Ownable {
         Beneficiary memory beneficiary = registry[_ens];
 
         // ENS was not found, add beneficiary as a new entry
-        if(beneficiary.exists == false) {
+        if (beneficiary.exists == false) {
             beneficiary.name = _name;
             beneficiary.wallet = _wallet;
             beneficiary.exists = true;
@@ -70,6 +70,29 @@ contract BeneficiaryRegistry is Ownable {
 
         // Log event
         emit LogBeneficiaryAdded(_ens, _name);
+    }
+
+    /**
+     * Return beneficiary information.
+     */
+    function getBeneficiary(
+        bytes32 _ens
+    )
+        public
+        view
+        returns (bytes32 _name, address payable _wallet, bool _exists)
+    {
+        Beneficiary memory beneficiary = registry[_ens];
+
+        _exists = beneficiary.exists;
+
+        if (beneficiary.exists == true) {
+            _name = beneficiary.name;
+            _wallet = beneficiary.wallet;
+        } else {
+            _name = 0;
+            _wallet = address(0x0);
+        }
     }
 
 }

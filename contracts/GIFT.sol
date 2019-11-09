@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 /**
- * Client receives `GIFT`s in exchange for the ETH
- * they invest in green projects.
+ * 1 tonne of carbon represents 1 GIFT. Client receives `GIFT`s in
+ * exchange for the ETH they invest in green projects.
  */
 contract GIFT is ERC20, ERC20Detailed, Ownable {
 

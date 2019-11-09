@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "@openzeppelin/contracts": "^2.4.0",
+        "chainlink": "^0.7.9",
         "nconf": "^0.10.0"
     },
     "devDependencies": {},
