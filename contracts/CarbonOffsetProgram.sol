@@ -53,8 +53,8 @@ contract CarbonOffsetProgram is Ownable {
         uint contribution = msg.value;
         uint rate = registry.getRate(_beneficiaryENS);
 
-        uint purchased = contribution.div(rate) ** 18;
-        uint gas = purchased.div(this.getCarbonEmissionsPerGasUnit());
+        uint purchased = contribution.div(rate).div(10 ** 18);
+        uint gas = purchased.mul(10 ** 18).div(this.getCarbonEmissionsPerGasUnit());
         uint totalSold = totalContributions.add(contribution);
 
         totalContributions = totalSold;
@@ -95,8 +95,8 @@ contract CarbonOffsetProgram is Ownable {
         return true;
     }
 
-    function getCarbonEmissionsPerGasUnit() external pure returns (uint _emissions) {
+    function getCarbonEmissionsPerGasUnit() external view returns (uint _emissions) {
         // TODO: chainlink this mofo up
-        _emissions = carbonEmissionsPergasUnit;
+        _emissions = carbonEmissionsPerGasUnit;
     }
 }
