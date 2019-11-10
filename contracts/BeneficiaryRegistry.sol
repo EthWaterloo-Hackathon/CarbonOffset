@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 /**
- * @dev Registry of beneficiaries who receive `CarbonGuiltToken`s.
+ * @dev Registry of beneficiaries who are eligible to receive payment in exchange for offsetting carbon emissions.
  */
 contract BeneficiaryRegistry is Ownable {
 
@@ -23,6 +23,8 @@ contract BeneficiaryRegistry is Ownable {
         address payable wallet;
         /// Used for membership check
         bool exists;
+        /// Used to get value of carbon credit in ETH
+        bytes32 rateApiUrl;
     }
 
     /*
@@ -50,7 +52,8 @@ contract BeneficiaryRegistry is Ownable {
     function addBeneficiary(
         bytes32 _ens,
         bytes32 _name,
-        address payable _wallet
+        address payable _wallet,
+        bytes32 _rateApiUrl
     )
         public
         onlyOwner
@@ -63,6 +66,7 @@ contract BeneficiaryRegistry is Ownable {
             beneficiary.name = _name;
             beneficiary.wallet = _wallet;
             beneficiary.exists = true;
+            beneficiary.rateApiUrl = _rateApiUrl;
 
             registry[_ens] = beneficiary;
             ensIndex.push(_ens);
@@ -95,4 +99,23 @@ contract BeneficiaryRegistry is Ownable {
         }
     }
 
+    function getAllBeneficiaries() public view returns (bytes32[] memory _names, address[] memory _wallets, bytes32[] memory _ensAddresses) {
+        bytes32 ens;
+        Beneficiary memory beneficiary;
+        for (uint i = 0; i < ensIndex.length; i++) {
+            ens = ensIndex[i];
+            beneficiary = registry[ens];
+            _ensAddresses[i] = ens;
+            _names[i] = beneficiary.name;
+            _wallets[i] = beneficiary.wallet;
+        }
+    }
+
+    /**
+     * Returns the value of a carbon credit (1 tonne) in ETH
+     */
+    function getRate(bytes32 _ens) public pure returns (uint _rate) {
+        // TODO: use chainlink to get rate from the beneficiary's API url
+        _rate = 1;
+    }
 }

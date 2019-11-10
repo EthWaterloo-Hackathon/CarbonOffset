@@ -15,11 +15,16 @@ contract CarbonOffsetProgram is Ownable {
 
     BeneficiaryRegistry public registry;
 
-    uint public carbonTonnagePerETH;
+    uint public carbonEmissionsPerGasUnit;
 
-    uint public ethOffset;
+    uint public totalContributions;
 
     uint public constant MIN_CONTRIBUTION = 1 ether;
+
+    /**
+     * Events
+     */
+    event GuiltAlleviated(uint indexed _tonnes, uint indexed _gas);
 
     /**
      * @dev Initialize with token address and beneficiary registry.
@@ -46,12 +51,17 @@ contract CarbonOffsetProgram is Ownable {
         require(msg.value >= MIN_CONTRIBUTION);
 
         uint contribution = msg.value;
-        uint purchased = contribution.mul(carbonTonnagePerETH);
-        uint totalSold = ethOffset.add(contribution);
+        uint rate = registry.getRate(_beneficiaryENS);
 
-        ethOffset = totalSold;
+        uint purchased = contribution.div(rate).div(10 ** 18);
+        uint gas = purchased.mul(10 ** 18).div(this.getCarbonEmissionsPerGasUnit());
+        uint totalSold = totalContributions.add(contribution);
+
+        totalContributions = totalSold;
         wallet.transfer(contribution);
         token.transfer(msg.sender, purchased);
+
+        emit GuiltAlleviated(purchased, gas);
 
         return purchased;
     }
@@ -62,26 +72,31 @@ contract CarbonOffsetProgram is Ownable {
     function addBeneficiary(
         bytes32 _ens,
         bytes32 _name,
-        address payable _wallet
+        address payable _wallet,
+        bytes32 _rateApiUrl
     )
         public
         onlyOwner
     {
-        registry.addBeneficiary(_ens, _name, _wallet);
+        registry.addBeneficiary(_ens, _name, _wallet, _rateApiUrl);
     }
 
     /**
      * @dev Carbon tonnage spent in terms of Ether produced.
      */
-    function setCarbonTonnagePerETH(
+    function setCarbonEmissionsPerGasUnit(
         uint _rate
     )
         onlyOwner
         external returns (bool)
     {
-        carbonTonnagePerETH = _rate;
+        carbonEmissionsPerGasUnit = _rate;
 
         return true;
     }
 
+    function getCarbonEmissionsPerGasUnit() external view returns (uint _emissions) {
+        // TODO: chainlink this mofo up
+        _emissions = carbonEmissionsPerGasUnit;
+    }
 }
