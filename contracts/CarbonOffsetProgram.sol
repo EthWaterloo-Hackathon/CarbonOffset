@@ -22,7 +22,7 @@ contract CarbonOffsetProgram is Ownable {
 
     uint public totalContributions;
 
-    uint public constant MIN_CONTRIBUTION = 1 ether;
+    uint public constant MIN_CONTRIBUTION = 1 finney;
 
     /**
      * Events
@@ -62,7 +62,7 @@ contract CarbonOffsetProgram is Ownable {
 
         uint contribution = msg.value;
 
-        uint purchased = contribution.div(giftPrice);
+        uint purchased = contribution.mul(10 ** 18).div(giftPrice);
         uint gas = purchased.mul(10 ** 18).div(this.getCarbonEmissionsPerGasUnit());
         uint totalSold = totalContributions.add(contribution);
 
