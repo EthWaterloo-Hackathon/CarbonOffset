@@ -62,7 +62,7 @@ contract CarbonOffsetProgram is Ownable {
 
         uint contribution = msg.value;
 
-        uint purchased = contribution.div(giftPrice).div(10 ** 18);
+        uint purchased = contribution.div(giftPrice);
         uint gas = purchased.mul(10 ** 18).div(this.getCarbonEmissionsPerGasUnit());
         uint totalSold = totalContributions.add(contribution);
 
