@@ -21,10 +21,10 @@ contract BeneficiaryRegistry is Ownable {
         bytes32 name;
         /// ETH is sent to this entity wallet
         address payable wallet;
+        /// Used to get value of carbon credit in ETH
+        uint giftPrice;
         /// Used for membership check
         bool exists;
-        /// Used to get value of carbon credit in ETH
-        bytes32 rateApiUrl;
     }
 
     /*
@@ -53,7 +53,7 @@ contract BeneficiaryRegistry is Ownable {
         bytes32 _ens,
         bytes32 _name,
         address payable _wallet,
-        bytes32 _rateApiUrl
+        uint _giftPrice
     )
         public
         onlyOwner
@@ -65,8 +65,8 @@ contract BeneficiaryRegistry is Ownable {
         if (beneficiary.exists == false) {
             beneficiary.name = _name;
             beneficiary.wallet = _wallet;
+            beneficiary.giftPrice = _giftPrice;
             beneficiary.exists = true;
-            beneficiary.rateApiUrl = _rateApiUrl;
 
             registry[_ens] = beneficiary;
             ensIndex.push(_ens);
@@ -84,7 +84,7 @@ contract BeneficiaryRegistry is Ownable {
     )
         public
         view
-        returns (bytes32 _name, address payable _wallet, bool _exists)
+        returns (bytes32 _name, address payable _wallet, uint _giftPrice, bool _exists)
     {
         Beneficiary memory beneficiary = registry[_ens];
 
@@ -93,13 +93,17 @@ contract BeneficiaryRegistry is Ownable {
         if (beneficiary.exists == true) {
             _name = beneficiary.name;
             _wallet = beneficiary.wallet;
+            _giftPrice = beneficiary.giftPrice;
         } else {
             _name = 0;
             _wallet = address(0x0);
         }
     }
 
-    function getAllBeneficiaries() public view returns (bytes32[] memory _names, address[] memory _wallets, bytes32[] memory _ensAddresses) {
+    function getAllBeneficiaries()
+        public view
+        returns (bytes32[] memory _names, address[] memory _wallets, uint[] memory _giftPrices, bytes32[] memory _ensAddresses)
+    {
         bytes32 ens;
         Beneficiary memory beneficiary;
         for (uint i = 0; i < ensIndex.length; i++) {
@@ -108,14 +112,8 @@ contract BeneficiaryRegistry is Ownable {
             _ensAddresses[i] = ens;
             _names[i] = beneficiary.name;
             _wallets[i] = beneficiary.wallet;
+            _giftPrices[i] = beneficiary.giftPrice;
         }
     }
 
-    /**
-     * Returns the value of a carbon credit (1 tonne) in ETH
-     */
-    function getRate(bytes32 _ens) public pure returns (uint _rate) {
-        // TODO: use chainlink to get rate from the beneficiary's API url
-        _rate = 1;
-    }
 }

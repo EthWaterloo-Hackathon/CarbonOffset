@@ -52,7 +52,7 @@ contract CarbonOffsetProgram is Ownable {
         public payable
         returns (uint)
     {
-        (bytes32 name, address payable wallet, bool exists) = registry.getBeneficiary(_beneficiaryENS);
+        (bytes32 name, address payable wallet, uint giftPrice, bool exists) = registry.getBeneficiary(_beneficiaryENS);
 
         /// Beneficiary must exist.
         require(exists == true);
@@ -61,9 +61,8 @@ contract CarbonOffsetProgram is Ownable {
         require(msg.value >= MIN_CONTRIBUTION);
 
         uint contribution = msg.value;
-        uint rate = registry.getRate(_beneficiaryENS);
 
-        uint purchased = contribution.div(rate).div(10 ** 18);
+        uint purchased = contribution.div(giftPrice).div(10 ** 18);
         uint gas = purchased.mul(10 ** 18).div(this.getCarbonEmissionsPerGasUnit());
         uint totalSold = totalContributions.add(contribution);
 
@@ -83,12 +82,12 @@ contract CarbonOffsetProgram is Ownable {
         bytes32 _ens,
         bytes32 _name,
         address payable _wallet,
-        bytes32 _rateApiUrl
+        uint _giftPrice
     )
         public
         onlyOwner
     {
-        registry.addBeneficiary(_ens, _name, _wallet, _rateApiUrl);
+        registry.addBeneficiary(_ens, _name, _wallet, _giftPrice);
     }
 
     /**
