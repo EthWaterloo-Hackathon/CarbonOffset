@@ -8,10 +8,10 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 contract BeneficiaryRegistry is Ownable {
 
     /// Registry
-    mapping(bytes32 => Beneficiary) registry;
+    mapping(bytes32 => Beneficiary) public registry;
 
     /// stores keys separately
-    bytes32[] ensIndex;
+    bytes32[] public ensIndex;
 
     /**
      * @dev A beneficiary entity working on a green project.
