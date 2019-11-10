@@ -2,5 +2,11 @@
     "owner": "0x8a07ad080aaf0c4baa8e3e492a1c837380183d64",
     "token": {
         "initialSupply": 1000000000
+    },
+    "linkToken": "0x20fe562d797a42dcb3399062ae9546cd06f63280",
+    "carbonEmissionJob": {
+        "id": "3cff0a3524694ff8834bda9cf9c779a1",
+        "oracle": "0xc99B3D447826532722E41bc36e644ba3479E4365"
     }
+
 }

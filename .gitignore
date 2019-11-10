@@ -9,4 +9,5 @@ dist
 logs
 node_modules
 secrets.json
+.secret
 truffle.js

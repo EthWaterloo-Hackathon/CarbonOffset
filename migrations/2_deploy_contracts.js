@@ -1,8 +1,11 @@
-const GIFT                = artifacts.require("./GIFT.sol");
-const BeneficiaryRegistry = artifacts.require("./BeneficiaryRegistry.sol");
-const CarbonOffsetProgram = artifacts.require("./CarbonOffsetProgram.sol");
+const GIFT                   = artifacts.require("./GIFT.sol");
+const BeneficiaryRegistry    = artifacts.require("./BeneficiaryRegistry.sol");
+const CarbonOffsetProgram    = artifacts.require("./CarbonOffsetProgram.sol");
+const CarbonEmissionConsumer = artifacts.require("./CarbonEmissionConsumer.sol");
 
-const config = require("../config");
+const config  = require("../config");
+
+const Web3 = require('web3');
 
 module.exports = function (deployer, network, accounts) {
     deployer.then(async () => {
@@ -16,6 +19,8 @@ module.exports = function (deployer, network, accounts) {
 
         // Driver controls registry
         await registry.transferOwnership(driver.address);
+
+        await deployer.deploy(CarbonEmissionConsumer);
     })
     .catch((err) => {
         console.error("Deployment failed", err);
