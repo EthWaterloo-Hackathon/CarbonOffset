@@ -1,6 +1,6 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
-const fs = require('fs');
+const fs       = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
@@ -20,17 +20,6 @@ module.exports = {
             port: 8545,            // Standard Ethereum port (default: none)
             network_id: "*",       // Any network (default: none)
         },
-
-        // Another network with more advanced options...
-        // advanced: {
-        // port: 8777,             // Custom port
-        // network_id: 1342,       // Custom network
-        // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
-        // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-        // from: <address>,        // Account to send txs from (default: accounts[0])
-        // websockets: true        // Enable EventEmitter interface for web3 (default: false)
-        // },
-
         ropsten: {
             provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/94ffa9e2ccb54637aeac62e9b31cf07d`),
             network_id: 3,       // Ropsten's id

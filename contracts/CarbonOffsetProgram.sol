@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./GIFT.sol";
 import "./BeneficiaryRegistry.sol";
+import "./CarbonEmissionConsumer.sol";
 
 /**
  * The driver program.
@@ -14,6 +15,8 @@ contract CarbonOffsetProgram is Ownable {
     GIFT public token;
 
     BeneficiaryRegistry public registry;
+
+    CarbonEmissionConsumer public oracle;
 
     uint public carbonEmissionsPerGasUnit;
 
@@ -29,9 +32,16 @@ contract CarbonOffsetProgram is Ownable {
     /**
      * @dev Initialize with token address and beneficiary registry.
      */
-    constructor(address _token, address _registry) public {
+    constructor(
+        address _token,
+        address _registry,
+        address _oracle
+    )
+        public
+    {
         token = GIFT(_token);
         registry = BeneficiaryRegistry(_registry);
+        oracle = CarbonEmissionConsumer(_oracle);
     }
 
     /**
@@ -84,19 +94,14 @@ contract CarbonOffsetProgram is Ownable {
     /**
      * @dev Carbon tonnage spent in terms of Ether produced.
      */
-    function setCarbonEmissionsPerGasUnit(
-        uint _rate
-    )
-        onlyOwner
-        external returns (bool)
+    function getCarbonEmissionsPerGasUnit()
+        external view
+        returns (uint _emissions)
     {
-        carbonEmissionsPerGasUnit = _rate;
+        uint avgMWhPerTx = oracle.avgMWhPerTx();
+        uint tCO2PerMWh = oracle.tCO2PerMWh();
+        uint avgGasPerTx = oracle.avgGasPerTx();
 
-        return true;
-    }
-
-    function getCarbonEmissionsPerGasUnit() external view returns (uint _emissions) {
-        // TODO: chainlink this mofo up
-        _emissions = carbonEmissionsPerGasUnit;
+        _emissions = avgMWhPerTx.mul(tCO2PerMWh).div(avgGasPerTx);
     }
 }
