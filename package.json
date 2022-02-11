@@ -7,7 +7,7 @@
         "test": "test"
     },
     "dependencies": {
-        "@openzeppelin/contracts": "^2.4.0",
+        "@openzeppelin/contracts": "^4.4.2",
         "chainlink": "^0.7.9",
         "nconf": "^0.10.0",
         "truffle-hdwallet-provider": "^1.0.17",
