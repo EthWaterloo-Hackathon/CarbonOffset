@@ -9,7 +9,7 @@
     "dependencies": {
         "@openzeppelin/contracts": "^2.4.0",
         "chainlink": "^0.7.9",
-        "nconf": "^0.10.0",
+        "nconf": "^0.11.4",
         "truffle-hdwallet-provider": "^1.0.17",
         "web3": "^1.2.2"
     },
